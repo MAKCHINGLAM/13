@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>學年支援紀錄表</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', '微軟正黑體', 'Microsoft JhengHei', system-ui, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 20px;
+            color: #212529;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 24px 28px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #1e466e;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 18px 22px;
+            margin-bottom: 28px;
+            border: 1px solid #e2e8f0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0b5e7e;
+            margin-top: 0;
+            margin-bottom: 18px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px 24px;
+        }
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-field label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1e466e;
+        }
+        .inline-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .inline-fields .form-field {
+            flex: 1;
+            min-width: 180px;
+        }
+        select, input, textarea {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        select:focus, input:focus, textarea:focus {
+            border-color: #0b5e7e;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(11,94,126,0.2);
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: white;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+        .dynamic-row {
+            background: white;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid #dee2e6;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-start;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .dynamic-row .form-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .btn-add {
+            background: #2c7da0;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        .btn-remove {
+            background: #b23c1c;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        .btn-bar {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #1e466e;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #0e3150;
+            transform: scale(0.97);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        footer {
+            font-size: 0.75rem;
+            text-align: center;
+            margin-top: 35px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            padding-top: 18px;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0.2cm;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .btn-bar, .btn-add, .btn-remove {
+                display: none;
+            }
+            .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .dynamic-row {
+                break-inside: avoid;
+            }
+            select, input, textarea {
+                border: 1px solid #aaa;
+                background: white;
+            }
+            @page {
+                size: A4;
+                margin: 1.5cm;
+            }
+        }
+        @media (max-width: 700px) {
+            .container { padding: 16px; }
+            .section { padding: 14px; }
+            .inline-fields { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>學年支援紀錄表</h1>
+    <div class="subtitle">
+        <div class="form-field" style="min-width: 220px;">
+            <label>學年</label>
+            <input type="text" id="academicYear" placeholder="請輸入學年" value="">
+        </div>
+    </div>
+
+    <!-- 學生基本資料 -->
+    <div class="section">
+        <div class="section-title">學生資料</div>
+        <div class="inline-fields">
+            <div class="form-field"><label>融合生姓名</label><input type="text" id="studentName" placeholder="請輸入姓名"></div>
+            <div class="form-field"><label>班別</label><input type="text" id="classGrade" placeholder="例如：高一A / 小四乙"></div>
+        </div>
+    </div>
+
+    <!-- 融合生表現（學生現況描述）動態生成 -->
+    <div class="section">
+        <div class="section-title">融合生表現（學生現況描述）</div>
+        <div id="currentSituationContainer"></div>
+    </div>
+
+    <!-- 學生能力表現（動態科目組） -->
+    <div class="section">
+        <div class="section-title">學生能力表現</div>
+        <div id="abilityGroupContainer">
+            <div class="dynamic-row ability-group">
+                <div class="form-field">
+                    <label>科目 (可複選)</label>
+                    <div class="checkbox-group subject-check-group">
+                        <label class="checkbox-item"><input type="checkbox" value="中文"> 中文</label>
+                        <label class="checkbox-item"><input type="checkbox" value="英文"> 英文</label>
+                        <label class="checkbox-item"><input type="checkbox" value="數學"> 數學</label>
+                        <label class="checkbox-item"><input type="checkbox" value="常識"> 常識</label>
+                        <label class="checkbox-item"><input type="checkbox" value="生物"> 生物</label>
+                        <label class="checkbox-item"><input type="checkbox" value="地理"> 地理</label>
+                        <label class="checkbox-item"><input type="checkbox" value="物理"> 物理</label>
+                        <label class="checkbox-item"><input type="checkbox" value="歷史"> 歷史</label>
+                        <label class="checkbox-item"><input type="checkbox" value="化學"> 化學</label>
+                        <label class="checkbox-item"><input type="checkbox" value="經濟"> 經濟</label>
+                        <label class="checkbox-item"><input type="checkbox" value="會計"> 會計</label>
+                        <label class="checkbox-item"><input type="checkbox" class="subject-other-checkbox" value="other"> 其他</label>
+                    </div>
+                    <input type="text" class="subject-other-custom" placeholder="請輸入科目名稱" style="display:none; margin-top:5px;">
+                </div>
+                <div class="form-field">
+                    <label>能力描述 (可複選)</label>
+                    <div class="checkbox-group ability-check-group">
+                        <label class="checkbox-item"><input type="checkbox" value="概念理解弱"> 概念理解弱</label>
+                        <label class="checkbox-item"><input type="checkbox" value="計算/應用困難"> 計算/應用困難</label>
+                        <label class="checkbox-item"><input type="checkbox" value="閱讀/識字困難"> 閱讀/識字困難</label>
+                        <label class="checkbox-item"><input type="checkbox" value="書寫困難"> 書寫困難</label>
+                        <label class="checkbox-item"><input type="checkbox" value="專注力弱"> 專注力弱</label>
+                        <label class="checkbox-item"><input type="checkbox" value="記憶困難"> 記憶困難</label>
+                        <label class="checkbox-item"><input type="checkbox" value="背誦困難"> 背誦困難</label>
+                        <label class="checkbox-item"><input type="checkbox" value="寫作困難"> 寫作困難</label>
+                        <label class="checkbox-item"><input type="checkbox" value="需具體化/視覺提示"> 需具體化/視覺提示</label>
+                        <label class="checkbox-item"><input type="checkbox" value="實驗/操作需協助"> 實驗/操作需協助</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ability-other-checkbox" value="other"> 其他</label>
+                    </div>
+                    <input type="text" class="ability-other-custom" placeholder="請輸入能力描述" style="display:none; margin-top:5px;">
+                </div>
+                <button type="button" class="btn-remove" onclick="removeAbilityGroup(this)">刪除此組</button>
+            </div>
+        </div>
+        <button type="button" class="btn-add" id="addAbilityGroupBtn">+ 新增科目組</button>
+        <!-- 額外自訂輸入框 -->
+        <div class="form-field" style="margin-top: 20px;">
+            <div class="checkbox-group">
+                <label class="checkbox-item"><input type="checkbox" id="extraAbilityOtherCheckbox" class="extra-ability-other-checkbox" value="other"> 其他能力補充說明</label>
+            </div>
+            <input type="text" id="extraAbilityOtherCustom" placeholder="請輸入補充內容" style="display:none; margin-top:5px;">
+        </div>
+    </div>
+
+    <!-- 學校所提供的輔助措施（抽離／外加支援）動態新增 -->
+    <div class="section">
+        <div class="section-title">學校所提供的輔助措施（抽離／外加支援）</div>
+        <div id="supportContainer">
+            <div class="dynamic-row support-row">
+                <div class="form-field">
+                    <label>支援科目 (可複選)</label>
+                    <div class="checkbox-group support-subject-group">
+                        <label class="checkbox-item"><input type="checkbox" value="中文"> 中文</label>
+                        <label class="checkbox-item"><input type="checkbox" value="英文"> 英文</label>
+                        <label class="checkbox-item"><input type="checkbox" value="數學"> 數學</label>
+                        <label class="checkbox-item"><input type="checkbox" value="常識"> 常識</label>
+                        <label class="checkbox-item"><input type="checkbox" value="生物"> 生物</label>
+                        <label class="checkbox-item"><input type="checkbox" value="地理"> 地理</label>
+                        <label class="checkbox-item"><input type="checkbox" value="物理"> 物理</label>
+                        <label class="checkbox-item"><input type="checkbox" value="歷史"> 歷史</label>
+                        <label class="checkbox-item"><input type="checkbox" value="化學"> 化學</label>
+                        <label class="checkbox-item"><input type="checkbox" value="經濟"> 經濟</label>
+                        <label class="checkbox-item"><input type="checkbox" value="會計"> 會計</label>
+                        <label class="checkbox-item"><input type="checkbox" class="support-other-checkbox" value="other"> 其他</label>
+                    </div>
+                    <input type="text" class="support-custom" placeholder="請輸入科目名稱" style="display:none; margin-top:5px;">
+                </div>
+                <div class="form-field">
+                    <label>抽離節數 (每週)</label>
+                    <select class="support-sessions">
+                        <option>1節</option><option>2節</option><option>3節</option><option>4節</option>
+                        <option>5節</option><option>6節以上</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label>支援形式 (可複選)</label>
+                    <div class="checkbox-group support-form-group">
+                        <label class="checkbox-item"><input type="checkbox" value="個別輔導"> 個別輔導</label>
+                        <label class="checkbox-item"><input type="checkbox" value="小組輔導"> 小組輔導</label>
+                        <label class="checkbox-item"><input type="checkbox" value="入班支援"> 入班支援</label>
+                        <label class="checkbox-item"><input type="checkbox" value="課後加強"> 課後加強</label>
+                        <label class="checkbox-item"><input type="checkbox" class="support-form-other-checkbox" value="other"> 其他</label>
+                    </div>
+                    <input type="text" class="support-form-custom" placeholder="請輸入支援形式" style="display:none; margin-top:5px;">
+                </div>
+                <button type="button" class="btn-remove" onclick="removeSupportRow(this)">刪除</button>
+            </div>
+        </div>
+        <button type="button" class="btn-add" id="addSupportBtn">+ 新增抽離/外加支援</button>
+    </div>
+
+    <!-- 巡支導師所提供的建議 -->
+    <div class="section">
+        <div class="section-title">巡支導師所提供的建議</div>
+        <div class="form-grid">
+            <div class="form-field">
+                <label>教師建議</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" value="提供視覺提示/流程圖"> 提供視覺提示/流程圖</label>
+                    <label class="checkbox-item"><input type="checkbox" value="指令一次一個"> 指令一次一個</label>
+                    <label class="checkbox-item"><input type="checkbox" value="安排同儕小老師"> 安排同儕小老師</label>
+                    <label class="checkbox-item"><input type="checkbox" value="延遲繳交作業"> 延遲繳交作業</label>
+                    <label class="checkbox-item"><input type="checkbox" value="課堂等待時間5-10秒"> 課堂等待時間5-10秒</label>
+                    <label class="checkbox-item"><input type="checkbox" value="允許口頭替代書寫"> 允許口頭替代書寫</label>
+                    <label class="checkbox-item"><input type="checkbox" value="定期與資源教師溝通"> 定期與資源教師溝通</label>
+                    <label class="checkbox-item"><input type="checkbox" class="teacher-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="teacher-other-custom" placeholder="請輸入其他建議" style="display:none; margin-top:5px;">
+            </div>
+            <div class="form-field">
+                <label>家長建議</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" value="建立固定作息時間表"> 建立固定作息時間表</label>
+                    <label class="checkbox-item"><input type="checkbox" value="每日陪伴複習15-20分"> 每日陪伴複習15-20分</label>
+                    <label class="checkbox-item"><input type="checkbox" value="使用計時器分段作業"> 使用計時器分段作業</label>
+                    <label class="checkbox-item"><input type="checkbox" value="多鼓勵少責備/正向增強"> 多鼓勵少責備/正向增強</label>
+                    <label class="checkbox-item"><input type="checkbox" value="訓練書包整理/生活自理"> 訓練書包整理/生活自理</label>
+                    <label class="checkbox-item"><input type="checkbox" value="安排同儕互動/社區活動"> 安排同儕互動/社區活動</label>
+                    <label class="checkbox-item"><input type="checkbox" value="準時出席會議/親師溝通"> 準時出席會議/親師溝通</label>
+                    <label class="checkbox-item"><input type="checkbox" class="parent-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="parent-other-custom" placeholder="請輸入其他建議" style="display:none; margin-top:5px;">
+            </div>
+            <div class="form-field">
+                <label>情緒支持與資源連結</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" value="教導情緒辨識/冷靜策略"> 教導情緒辨識/冷靜策略</label>
+                    <label class="checkbox-item"><input type="checkbox" value="建立家庭獎勵制度"> 建立家庭獎勵制度</label>
+                    <label class="checkbox-item"><input type="checkbox" value="申請融合教育資助"> 申請融合教育資助</label>
+                    <label class="checkbox-item"><input type="checkbox" value="參加家長支援團體/培訓"> 參加家長支援團體/培訓</label>
+                    <label class="checkbox-item"><input type="checkbox" value="尋求學校輔導資源"> 尋求學校輔導資源</label>
+                    <label class="checkbox-item"><input type="checkbox" class="resource-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="resource-other-custom" placeholder="請輸入其他建議" style="display:none; margin-top:5px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- 備註 -->
+    <div class="section">
+        <div class="section-title">備註</div>
+        <textarea rows="3" id="remarks" placeholder="請輸入備註內容"></textarea>
+    </div>
+
+    <div class="btn-bar">
+        <button id="exportPdfBtn" class="btn-secondary">儲存為 PDF</button>
+        <button id="exportWordBtn" class="btn-secondary">儲存為 Word</button>
+        <button id="resetBtn">重置所有欄位 (輸入下一位學生)</button>
+    </div>
+    <footer>本表格可記錄學生支援需求及策略，填寫後可儲存為PDF或Word檔案。</footer>
+</div>
+
+<script>
+    // ==================== 第二部分：現況描述項目（動態生成，含其他自訂） ====================
+    const situationItems = [
+        { label: "整體認知功能", options: ["符合同齡水準", "輕度落後", "中度落後", "重度落後"] },
+        { label: "注意力表現", options: ["專注力良好", "選擇性注意力弱", "持續性注意力弱", "容易分心", "需提醒維持專注"] },
+        { label: "記憶力表現", options: ["短期記憶佳", "長期記憶佳", "視覺記憶優於聽覺", "記憶提取困難"] },
+        { label: "口語表達", options: ["表達清晰流暢", "發音不清晰", "詞彙量不足", "句子結構簡單", "無口語"] },
+        { label: "語言理解", options: ["能理解複雜句子", "能理解簡單句子", "需重複說明", "理解能力弱"] },
+        { label: "社交互動", options: ["主動與同儕互動", "被動回應", "偏好獨處", "缺乏社交技巧"] },
+        { label: "情緒穩定性", options: ["情緒穩定", "偶爾起伏", "頻繁波動", "情緒反應過度"] },
+        { label: "挫折容忍度", options: ["能接受失敗", "挫折易放棄", "挫折時情緒失控", "需立即增強"] },
+        { label: "行為表現", options: ["行為合宜", "攻擊行為", "自傷行為", "干擾行為", "固著/重複行為"] },
+        { label: "大肌肉動作", options: ["符合同齡", "協調性弱", "平衡能力弱", "肌力不足"] },
+        { label: "小肌肉/書寫", options: ["符合同齡", "握筆姿勢不當", "書寫速度慢", "字體潦草"] },
+        { label: "生活自理", options: ["獨立完成", "需口頭提醒", "需肢體協助", "無法自行完成"] },
+        { label: "安全意識", options: ["具基本安全意識", "需提醒", "危險辨識弱", "需監管"] }
+    ];
+
+    function buildSituationSection() {
+        const container = document.getElementById('currentSituationContainer');
+        container.innerHTML = '';
+        const grid = document.createElement('div');
+        grid.className = 'form-grid';
+        situationItems.forEach(item => {
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'form-field';
+            const label = document.createElement('label');
+            label.textContent = item.label;
+            fieldDiv.appendChild(label);
+            const checkGroup = document.createElement('div');
+            checkGroup.className = 'checkbox-group';
+            item.options.forEach(opt => {
+                const cbItem = document.createElement('label');
+                cbItem.className = 'checkbox-item';
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = opt;
+                cbItem.appendChild(cb);
+                cbItem.appendChild(document.createTextNode(opt));
+                checkGroup.appendChild(cbItem);
+            });
+            // 添加「其他」選項
+            const otherCbItem = document.createElement('label');
+            otherCbItem.className = 'checkbox-item';
+            const otherCb = document.createElement('input');
+            otherCb.type = 'checkbox';
+            otherCb.value = 'other';
+            otherCb.classList.add('situation-other-checkbox');
+            otherCbItem.appendChild(otherCb);
+            otherCbItem.appendChild(document.createTextNode('其他'));
+            checkGroup.appendChild(otherCbItem);
+            fieldDiv.appendChild(checkGroup);
+            const customInput = document.createElement('input');
+            customInput.type = 'text';
+            customInput.placeholder = '請輸入其他內容';
+            customInput.classList.add('situation-other-custom');
+            customInput.style.display = 'none';
+            customInput.style.marginTop = '5px';
+            fieldDiv.appendChild(customInput);
+            // 綁定事件
+            otherCb.addEventListener('change', function() {
+                customInput.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) customInput.value = '';
+            });
+            grid.appendChild(fieldDiv);
+        });
+        container.appendChild(grid);
+    }
+
+    // ==================== 動態科目組 ====================
+    function setupSubjectOtherHandler(group) {
+        const otherCheckbox = group.querySelector('.subject-other-checkbox');
+        const customInput = group.querySelector('.subject-other-custom');
+        if (otherCheckbox && customInput) {
+            const toggle = () => {
+                customInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+                if (!otherCheckbox.checked) customInput.value = '';
+            };
+            otherCheckbox.addEventListener('change', toggle);
+            toggle();
+        }
+    }
+
+    function setupAbilityOtherHandler(group) {
+        const otherCheckbox = group.querySelector('.ability-other-checkbox');
+        const customInput = group.querySelector('.ability-other-custom');
+        if (otherCheckbox && customInput) {
+            const toggle = () => {
+                customInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+                if (!otherCheckbox.checked) customInput.value = '';
+            };
+            otherCheckbox.addEventListener('change', toggle);
+            toggle();
+        }
+    }
+
+    function addAbilityGroup() {
+        const container = document.getElementById('abilityGroupContainer');
+        const newRow = document.createElement('div');
+        newRow.className = 'dynamic-row ability-group';
+        newRow.innerHTML = `
+            <div class="form-field">
+                <label>科目 (可複選)</label>
+                <div class="checkbox-group subject-check-group">
+                    <label class="checkbox-item"><input type="checkbox" value="中文"> 中文</label>
+                    <label class="checkbox-item"><input type="checkbox" value="英文"> 英文</label>
+                    <label class="checkbox-item"><input type="checkbox" value="數學"> 數學</label>
+                    <label class="checkbox-item"><input type="checkbox" value="常識"> 常識</label>
+                    <label class="checkbox-item"><input type="checkbox" value="生物"> 生物</label>
+                    <label class="checkbox-item"><input type="checkbox" value="地理"> 地理</label>
+                    <label class="checkbox-item"><input type="checkbox" value="物理"> 物理</label>
+                    <label class="checkbox-item"><input type="checkbox" value="歷史"> 歷史</label>
+                    <label class="checkbox-item"><input type="checkbox" value="化學"> 化學</label>
+                    <label class="checkbox-item"><input type="checkbox" value="經濟"> 經濟</label>
+                    <label class="checkbox-item"><input type="checkbox" value="會計"> 會計</label>
+                    <label class="checkbox-item"><input type="checkbox" class="subject-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="subject-other-custom" placeholder="請輸入科目名稱" style="display:none; margin-top:5px;">
+            </div>
+            <div class="form-field">
+                <label>能力描述 (可複選)</label>
+                <div class="checkbox-group ability-check-group">
+                    <label class="checkbox-item"><input type="checkbox" value="概念理解弱"> 概念理解弱</label>
+                    <label class="checkbox-item"><input type="checkbox" value="計算/應用困難"> 計算/應用困難</label>
+                    <label class="checkbox-item"><input type="checkbox" value="閱讀/識字困難"> 閱讀/識字困難</label>
+                    <label class="checkbox-item"><input type="checkbox" value="書寫困難"> 書寫困難</label>
+                    <label class="checkbox-item"><input type="checkbox" value="專注力弱"> 專注力弱</label>
+                    <label class="checkbox-item"><input type="checkbox" value="記憶困難"> 記憶困難</label>
+                    <label class="checkbox-item"><input type="checkbox" value="背誦困難"> 背誦困難</label>
+                    <label class="checkbox-item"><input type="checkbox" value="寫作困難"> 寫作困難</label>
+                    <label class="checkbox-item"><input type="checkbox" value="需具體化/視覺提示"> 需具體化/視覺提示</label>
+                    <label class="checkbox-item"><input type="checkbox" value="實驗/操作需協助"> 實驗/操作需協助</label>
+                    <label class="checkbox-item"><input type="checkbox" class="ability-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="ability-other-custom" placeholder="請輸入能力描述" style="display:none; margin-top:5px;">
+            </div>
+            <button type="button" class="btn-remove" onclick="removeAbilityGroup(this)">刪除此組</button>
+        `;
+        container.appendChild(newRow);
+        const subjectGroup = newRow.querySelector('.subject-check-group');
+        setupSubjectOtherHandler(subjectGroup);
+        const abilityGroup = newRow.querySelector('.ability-check-group');
+        setupAbilityOtherHandler(abilityGroup);
+    }
+    function removeAbilityGroup(btn) {
+        const row = btn.closest('.ability-group');
+        if (document.querySelectorAll('.ability-group').length > 1) {
+            row.remove();
+        } else {
+            alert("至少保留一個科目組");
+        }
+    }
+
+    // ==================== 抽離支援動態行 ====================
+    function setupSupportOtherHandler(row) {
+        const otherCheckbox = row.querySelector('.support-other-checkbox');
+        const customInput = row.querySelector('.support-custom');
+        if (otherCheckbox && customInput) {
+            const toggle = () => {
+                customInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+                if (!otherCheckbox.checked) customInput.value = '';
+            };
+            otherCheckbox.addEventListener('change', toggle);
+            toggle();
+        }
+    }
+    function setupSupportFormOtherHandler(row) {
+        const otherCheckbox = row.querySelector('.support-form-other-checkbox');
+        const customInput = row.querySelector('.support-form-custom');
+        if (otherCheckbox && customInput) {
+            const toggle = () => {
+                customInput.style.display = otherCheckbox.checked ? 'block' : 'none';
+                if (!otherCheckbox.checked) customInput.value = '';
+            };
+            otherCheckbox.addEventListener('change', toggle);
+            toggle();
+        }
+    }
+
+    function addSupportRow() {
+        const container = document.getElementById('supportContainer');
+        const newRow = document.createElement('div');
+        newRow.className = 'dynamic-row support-row';
+        newRow.innerHTML = `
+            <div class="form-field">
+                <label>支援科目 (可複選)</label>
+                <div class="checkbox-group support-subject-group">
+                    <label class="checkbox-item"><input type="checkbox" value="中文"> 中文</label>
+                    <label class="checkbox-item"><input type="checkbox" value="英文"> 英文</label>
+                    <label class="checkbox-item"><input type="checkbox" value="數學"> 數學</label>
+                    <label class="checkbox-item"><input type="checkbox" value="常識"> 常識</label>
+                    <label class="checkbox-item"><input type="checkbox" value="生物"> 生物</label>
+                    <label class="checkbox-item"><input type="checkbox" value="地理"> 地理</label>
+                    <label class="checkbox-item"><input type="checkbox" value="物理"> 物理</label>
+                    <label class="checkbox-item"><input type="checkbox" value="歷史"> 歷史</label>
+                    <label class="checkbox-item"><input type="checkbox" value="化學"> 化學</label>
+                    <label class="checkbox-item"><input type="checkbox" value="經濟"> 經濟</label>
+                    <label class="checkbox-item"><input type="checkbox" value="會計"> 會計</label>
+                    <label class="checkbox-item"><input type="checkbox" class="support-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="support-custom" placeholder="請輸入科目名稱" style="display:none; margin-top:5px;">
+            </div>
+            <div class="form-field">
+                <label>抽離節數 (每週)</label>
+                <select class="support-sessions">
+                    <option>1節</option><option>2節</option><option>3節</option><option>4節</option>
+                    <option>5節</option><option>6節以上</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label>支援形式 (可複選)</label>
+                <div class="checkbox-group support-form-group">
+                    <label class="checkbox-item"><input type="checkbox" value="個別輔導"> 個別輔導</label>
+                    <label class="checkbox-item"><input type="checkbox" value="小組輔導"> 小組輔導</label>
+                    <label class="checkbox-item"><input type="checkbox" value="入班支援"> 入班支援</label>
+                    <label class="checkbox-item"><input type="checkbox" value="課後加強"> 課後加強</label>
+                    <label class="checkbox-item"><input type="checkbox" class="support-form-other-checkbox" value="other"> 其他</label>
+                </div>
+                <input type="text" class="support-form-custom" placeholder="請輸入支援形式" style="display:none; margin-top:5px;">
+            </div>
+            <button type="button" class="btn-remove" onclick="removeSupportRow(this)">刪除</button>
+        `;
+        container.appendChild(newRow);
+        setupSupportOtherHandler(newRow);
+        setupSupportFormOtherHandler(newRow);
+    }
+    function removeSupportRow(btn) {
+        const row = btn.closest('.support-row');
+        if (document.querySelectorAll('.support-row').length > 1) {
+            row.remove();
+        } else {
+            alert("至少保留一個支援項目");
+        }
+    }
+
+    // ==================== 額外自訂輸入框處理 ====================
+    const extraAbilityCheckbox = document.getElementById('extraAbilityOtherCheckbox');
+    const extraAbilityCustom = document.getElementById('extraAbilityOtherCustom');
+    if (extraAbilityCheckbox && extraAbilityCustom) {
+        extraAbilityCheckbox.addEventListener('change', function() {
+            extraAbilityCustom.style.display = this.checked ? 'block' : 'none';
+            if (!this.checked) extraAbilityCustom.value = '';
+        });
+        extraAbilityCustom.style.display = 'none';
+    }
+
+    // ==================== 第五部分「其他」處理 ====================
+    function setupOtherInput(checkboxClass, inputClass) {
+        const checkboxes = document.querySelectorAll('.' + checkboxClass);
+        checkboxes.forEach(cb => {
+            const parent = cb.closest('.checkbox-group');
+            const input = parent.parentNode.querySelector('.' + inputClass);
+            if (input) {
+                const toggle = () => {
+                    input.style.display = cb.checked ? 'block' : 'none';
+                    if (!cb.checked) input.value = '';
+                };
+                cb.addEventListener('change', toggle);
+                toggle();
+            }
+        });
+    }
+
+    // ==================== 導出 PDF / Word 相關函數 ====================
+    function getCheckboxGroupText(group) {
+        const checked = Array.from(group.querySelectorAll('input[type="checkbox"]:checked')).map(cb => {
+            if (cb.classList.contains('subject-other-checkbox') || cb.classList.contains('ability-other-checkbox') ||
+                cb.classList.contains('support-other-checkbox') || cb.classList.contains('support-form-other-checkbox') ||
+                cb.classList.contains('situation-other-checkbox') || cb.classList.contains('teacher-other-checkbox') ||
+                cb.classList.contains('parent-other-checkbox') || cb.classList.contains('resource-other-checkbox') ||
+                cb.classList.contains('extra-ability-other-checkbox')) {
+                const row = cb.closest('.ability-group') || cb.closest('.support-row') || cb.closest('.form-field');
+                let customInput = null;
+                if (cb.classList.contains('subject-other-checkbox')) customInput = row.querySelector('.subject-other-custom');
+                else if (cb.classList.contains('ability-other-checkbox')) customInput = row.querySelector('.ability-other-custom');
+                else if (cb.classList.contains('support-other-checkbox')) customInput = row.querySelector('.support-custom');
+                else if (cb.classList.contains('support-form-other-checkbox')) customInput = row.querySelector('.support-form-custom');
+                else if (cb.classList.contains('situation-other-checkbox')) customInput = row.querySelector('.situation-other-custom');
+                else if (cb.classList.contains('teacher-other-checkbox')) customInput = document.querySelector('.teacher-other-custom');
+                else if (cb.classList.contains('parent-other-checkbox')) customInput = document.querySelector('.parent-other-custom');
+                else if (cb.classList.contains('resource-other-checkbox')) customInput = document.querySelector('.resource-other-custom');
+                else if (cb.classList.contains('extra-ability-other-checkbox')) customInput = document.getElementById('extraAbilityOtherCustom');
+                const customText = customInput ? customInput.value.trim() : '';
+                return customText || '其他';
+            }
+            return cb.value;
+        });
+        if (checked.length === 0) return '（未選擇）';
+        return checked.join('、');
+    }
+
+    function replaceCheckboxesWithText(element) {
+        const allCheckGroups = element.querySelectorAll('.checkbox-group');
+        allCheckGroups.forEach(group => {
+            const text = getCheckboxGroupText(group);
+            const div = document.createElement('div');
+            div.textContent = text;
+            div.style.padding = '4px 8px';
+            div.style.border = '1px solid #aaa';
+            div.style.borderRadius = '4px';
+            div.style.backgroundColor = '#f9f9f9';
+            group.parentNode.replaceChild(div, group);
+        });
+        // 移除所有自訂輸入框
+        const customInputs = element.querySelectorAll('.subject-other-custom, .ability-other-custom, .support-custom, .support-form-custom, .situation-other-custom, .teacher-other-custom, .parent-other-custom, .resource-other-custom, #extraAbilityOtherCustom');
+        customInputs.forEach(inp => inp.remove());
+    }
+
+    function printAsPDF() {
+        const originalContainer = document.querySelector('.container');
+        const cloneContainer = originalContainer.cloneNode(true);
+        const btns = cloneContainer.querySelector('.btn-bar');
+        if(btns) btns.remove();
+        const addBtns = cloneContainer.querySelectorAll('.btn-add');
+        addBtns.forEach(btn => btn.remove());
+        const removeBtns = cloneContainer.querySelectorAll('.btn-remove');
+        removeBtns.forEach(btn => btn.remove());
+        const footer = cloneContainer.querySelector('footer');
+        if(footer) footer.remove();
+        
+        replaceCheckboxesWithText(cloneContainer);
+        
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>學年支援紀錄表</title>
+                <style>
+                    body { font-family: 'Segoe UI', '微軟正黑體', sans-serif; margin: 1.5cm; padding: 0; }
+                    .container { max-width: 100%; margin: 0 auto; }
+                    .section { background: #f8f9fa; border-radius: 16px; padding: 12px 16px; margin-bottom: 16px; border: 1px solid #ccc; page-break-inside: avoid; break-inside: avoid; }
+                    .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 12px; }
+                    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+                    .form-field { margin-bottom: 8px; }
+                    .form-field label { font-weight: bold; display: block; margin-bottom: 4px; }
+                    .inline-fields { display: flex; gap: 20px; }
+                    .dynamic-row { border: 1px solid #ccc; padding: 8px; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 12px; }
+                    .dynamic-row .form-field { flex: 1; }
+                    h1 { font-size: 1.5rem; color: #1e466e; }
+                    @media print { body { margin: 0; } .section { break-inside: avoid; } }
+                </style>
+            </head>
+            <body><div class="container">${cloneContainer.innerHTML}</div></body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    function exportWord() {
+        const content = document.querySelector('.container').cloneNode(true);
+        const btns = content.querySelector('.btn-bar');
+        if(btns) btns.remove();
+        const addBtns = content.querySelectorAll('.btn-add');
+        addBtns.forEach(btn => btn.remove());
+        const removeBtns = content.querySelectorAll('.btn-remove');
+        removeBtns.forEach(btn => btn.remove());
+        const footer = content.querySelector('footer');
+        if(footer) footer.remove();
+        
+        replaceCheckboxesWithText(content);
+        
+        const header = "<html><head><meta charset='UTF-8'><title>學年支援紀錄表</title><style>body { font-family: 'Segoe UI', '微軟正黑體'; margin:1cm; } .section { margin-bottom: 16px; page-break-inside: avoid; } .dynamic-row { border:1px solid #ccc; padding:8px; margin:8px 0; page-break-inside: avoid; } .btn-bar, .btn-add, .btn-remove { display: none; }</style></head><body>";
+        const htmlContent = header + content.innerHTML + "</body></html>";
+        const blob = new Blob([htmlContent], { type: 'application/msword' });
+        const link = document.createElement('a');
+        const studentName = document.getElementById('studentName').value.trim() || '學生';
+        const academicYear = document.getElementById('academicYear').value.trim() || '學年';
+        link.href = URL.createObjectURL(blob);
+        link.download = `學年支援紀錄表_${studentName}_${academicYear}.doc`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
+    // ==================== 重置 ====================
+    function resetForm() {
+        if (confirm('確定要清除所有填寫內容嗎？')) {
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = false;
+                } else if (el.tagName === 'SELECT') {
+                    el.selectedIndex = 0;
+                } else {
+                    el.value = '';
+                }
+            });
+            document.getElementById('academicYear').value = '';
+            // 隱藏所有自訂輸入框
+            const customInputs = document.querySelectorAll('.subject-other-custom, .ability-other-custom, .support-custom, .support-form-custom, .situation-other-custom, .teacher-other-custom, .parent-other-custom, .resource-other-custom, #extraAbilityOtherCustom');
+            customInputs.forEach(inp => {
+                inp.style.display = 'none';
+                inp.value = '';
+            });
+            // 重置動態科目組：保留一個，清空其內容
+            const abilityGroups = document.querySelectorAll('.ability-group');
+            for (let i = 1; i < abilityGroups.length; i++) abilityGroups[i].remove();
+            const firstGroup = document.querySelector('.ability-group');
+            if (firstGroup) {
+                firstGroup.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                const firstSubjectCustom = firstGroup.querySelector('.subject-other-custom');
+                if (firstSubjectCustom) firstSubjectCustom.style.display = 'none';
+                const firstAbilityCustom = firstGroup.querySelector('.ability-other-custom');
+                if (firstAbilityCustom) firstAbilityCustom.style.display = 'none';
+            }
+            // 重置抽離支援行數為一個，清空內容
+            const supportRows = document.querySelectorAll('.support-row');
+            for (let i = 1; i < supportRows.length; i++) supportRows[i].remove();
+            const firstSupportRow = document.querySelector('.support-row');
+            if (firstSupportRow) {
+                firstSupportRow.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                const supportCustom = firstSupportRow.querySelector('.support-custom');
+                if (supportCustom) supportCustom.style.display = 'none';
+                const supportFormCustom = firstSupportRow.querySelector('.support-form-custom');
+                if (supportFormCustom) supportFormCustom.style.display = 'none';
+            }
+        }
+    }
+
+    // 初始化
+    buildSituationSection();
+    // 綁定事件
+    document.getElementById('addAbilityGroupBtn').addEventListener('click', addAbilityGroup);
+    document.getElementById('addSupportBtn').addEventListener('click', addSupportRow);
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+    document.getElementById('exportPdfBtn').addEventListener('click', printAsPDF);
+    document.getElementById('exportWordBtn').addEventListener('click', exportWord);
+    // 為現有科目組設置「其他」處理
+    document.querySelectorAll('.subject-check-group').forEach(group => setupSubjectOtherHandler(group));
+    document.querySelectorAll('.ability-check-group').forEach(group => setupAbilityOtherHandler(group));
+    document.querySelectorAll('.support-row').forEach(row => {
+        setupSupportOtherHandler(row);
+        setupSupportFormOtherHandler(row);
+    });
+    // 第五部分「其他」處理
+    setupOtherInput('teacher-other-checkbox', 'teacher-other-custom');
+    setupOtherInput('parent-other-checkbox', 'parent-other-custom');
+    setupOtherInput('resource-other-checkbox', 'resource-other-custom');
+</script>
+</body>
+</html>
